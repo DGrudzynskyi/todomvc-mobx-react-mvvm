@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { withVM } from '../lib/with-vm';
-import { ITodoMvcVMProps, TodosVMContext, TodosVM } from './todo-mvc.vm';
+import { withVM } from '../infrastructure-utils/with-vm';
+import { TodosVMContext, TodosVM } from './todo-mvc.vm';
+import { TodoStatus } from './todos.dao';
 import { Footer } from './_footer';
 import { Header } from './_header';
 import { TodoList } from './_todo-list/todo-list';
 
-
-const TodoMvcDisconnected = (props: ITodoMvcVMProps & { vm: TodosVM }) => {
+const TodoMvcDisconnected = (props: { status: TodoStatus, vm: TodosVM }) => {
     return <TodosVMContext.Provider value={props.vm}>
         <section className="todoapp">
             <Header />

@@ -17,7 +17,7 @@ interface IVMConstructor<TProps, TVM extends IViewModel<TProps>> {
  * Wraps react component by passing prepared viewmodel into it as a separate prop
  * Should be used if vmFactory is overriden in order to unilize IoC container for viewmodel instances creation
  * Otherwise - use default 'withVM' function
- * @param vmFactory - factory, which is to be used for creation of the viewmodel from it's constructor and initial props passed to the component
+ * @param vmFactory - factory, used for creation of the viewmodel from it's constructor and initial props passed to the component
  */
 const makeWithVM = (
     vmFactory: <TFactoryProps, TFactoryVM extends IViewModel<TFactoryProps>>(props: TFactoryProps, VMConstructor: IVMConstructor<TFactoryProps, TFactoryVM>) => TFactoryVM

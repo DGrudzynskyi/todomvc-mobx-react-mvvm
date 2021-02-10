@@ -1,19 +1,15 @@
 import * as mobx from 'mobx';
-import { IViewModel } from '../lib/with-vm';
+import { IViewModel } from '../infrastructure-utils/with-vm';
 import { TodoDAO } from '../local-storage/todos.dao';
 import { ITodoDAO, ITodoItem, TodoStatus } from "./todos.dao";
 import { createContext } from 'react';
-import { createConnect } from '../lib/make-context';
+import { createConnect } from '../infrastructure-utils/create-context';
 
-interface ITodoMvcVMProps {
-    status: TodoStatus;
-}
-
-class TodosVM implements IViewModel<ITodoMvcVMProps> {
+class TodosVM implements IViewModel<unknown> {
     @mobx.observable
     private todoList: ITodoItem[];
 
-    constructor(props: ITodoMvcVMProps, private readonly todoDao: ITodoDAO = new TodoDAO()) {
+    constructor(props: unknown, private readonly todoDao: ITodoDAO = new TodoDAO()) {
         this.todoList = [];
         mobx.makeObservable(this);
     }
@@ -74,7 +70,6 @@ class TodosVM implements IViewModel<ITodoMvcVMProps> {
     }
 }
 
-const TodosVMContext = createContext<TodosVM>(null);
-const connectTodosVM = createConnect(TodosVMContext);
+const [ connectTodosVM, TodosVMContext ] = createConnect<TodosVM>();
 
-export { TodosVM, ITodoMvcVMProps, TodosVMContext, connectTodosVM };
+export { TodosVM, TodosVMContext, connectTodosVM };

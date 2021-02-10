@@ -2,6 +2,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { TodoMVC } from './todo-mvc/todo-mvc';
+import { TodoStatus } from './todo-mvc/todos.dao';
 
 ReactDOM.render(
     <React.StrictMode>
@@ -9,7 +10,9 @@ ReactDOM.render(
             <Route 
                 path="/:todostatus?"
                 render={({ match }) => {
-                    return <TodoMVC status={match.params.todostatus} />;
+                    return <>
+                        <TodoMVC status={match.params.todostatus} />
+                    </>;
                   }}>
             </Route>
             

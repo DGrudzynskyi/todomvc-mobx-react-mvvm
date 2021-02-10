@@ -1,16 +1,9 @@
 import { default as React, useEffect } from 'react';
 import { useStateSafe } from './internals/use-state-safe';
 import { ReactComponent } from './internals/additional-types';
+import { IViewModel, IVMConstructor } from './wm-types';
+import { contextRegistry } from './create-connect';
 
-interface IViewModel<IProps = Record<string, unknown>> {
-    initialize?: () => Promise<void> | void;
-    cleanup?: () => void;
-    onPropsChanged?: (props: IProps) => void;
-}
-
-interface IVMConstructor<TProps, TVM extends IViewModel<TProps>> {
-    new (props: TProps, ...dependencies: any[]) : TVM;
-}
 
 /**
  * make function, which bind the viewmodel to the component
@@ -21,10 +14,10 @@ interface IVMConstructor<TProps, TVM extends IViewModel<TProps>> {
  */
 const makeWithVM = (
     vmFactory: <TFactoryProps, TFactoryVM extends IViewModel<TFactoryProps>>(props: TFactoryProps, VMConstructor: IVMConstructor<TFactoryProps, TFactoryVM>) => TFactoryVM
-) => <TVM extends IViewModel<TProps>, TVMPropName extends string, TFullProps extends Record<TVMPropName,TVM> & TProps, TProps = Record<string, unknown>>(
+) => <TVM extends IViewModel<TProps>, TFullProps extends Record<TVMPropName,TVM> & TProps,TVMPropName extends string = never,  TProps = Record<string, unknown>>(
     Component: ReactComponent<TFullProps>,
     VMConstructor: IVMConstructor<TProps, TVM>,
-    vmPropName: TVMPropName,
+    vmPropName?: TVMPropName,
     depsSelector?: (props: TProps) => any[],
 ) => {
     return ((props: TProps) => {
@@ -69,11 +62,22 @@ const makeWithVM = (
 
         if (viewModel) {
             const propsWithVM = {
-                [vmPropName]:viewModel,
                 ...props,
-            } as TFullProps; //as Record<TVMPropName,TVM> & TProps;
+            } as TFullProps;
 
-            return <Component {...propsWithVM}/>;
+            // if property is suppsed to be injected into the component, hosting the viewmodel - pass it as a new prop
+            if(vmPropName) {
+                // todo: investigate why "Type 'IViewModel<TProps>' is not assignable to type 'TFullProps[TVMPropName]'
+                propsWithVM[vmPropName] = viewModel as any;
+            }
+
+            const ContextInstance = contextRegistry[VMConstructor.name];
+
+            return (
+                <ContextInstance.Provider value={viewModel}>
+                    <Component {...propsWithVM}/>
+                </ContextInstance.Provider>
+            );
         } else {
             return null;
         }
@@ -85,14 +89,15 @@ const makeWithVM = (
 
 /**
  * Create persistent viewmodel from react props.
- * Wraps react component by passing prepared viewmodel into it.
- * @param Component - component, which receive viewmodel as a prop named after 'vmPropName' argument
+ * Wraps react component into the context, which provide the instance of viewmodel
+ * if 'vmPropName' parameter is present - pass viewmodel as a property to the Component
+ * @param Component - component, which receive viewmodel in a prop named after 'vmPropName' argument if 'vmPropName' is provided
  * @param VMConstructor - constructor of the viewmodel. Viewmodel will be created using 'new' operator with this constructor
  *  and passing component's props as a first argument of the constructor
  * @param depsSelector - if returns an array - this array is passed to 'deps' argument of react's useEffect hook 
  *  to let viewmodel be rebuilt if needed on specific props change. If does not return anything - empty array is passed to the useEffect,
  *  so single viemodel instance is active throught the whole lifetime of component instance.
- * @param vmPropName - name of the prop, used for viewmodel injection. TODO: pass 'vm' by default, so far stuck with typings
+ * @param vmPropName - name of the prop, used for viewmodel injection.
  */
 const withVM = makeWithVM((props, Constructor) => new Constructor(props));
 

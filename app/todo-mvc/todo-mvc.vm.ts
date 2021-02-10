@@ -2,13 +2,14 @@ import * as mobx from 'mobx';
 import { IViewModel } from '../infrastructure-utils/with-vm';
 import { TodoDAO } from '../local-storage/todos.dao';
 import { ITodoDAO, ITodoItem, TodoStatus } from "./todos.dao";
-import { createContext } from 'react';
-import { createConnect } from '../infrastructure-utils/create-context';
+import { createConnect } from '../infrastructure-utils/create-connect';
 
+// viewmodel does not depends on specific execution context, therefore set props to 'unknown'
 class TodosVM implements IViewModel<unknown> {
     @mobx.observable
     private todoList: ITodoItem[];
 
+    // we don't have any IoC container plugged in for the application so concrete instance is plugged in explicitely
     constructor(props: unknown, private readonly todoDao: ITodoDAO = new TodoDAO()) {
         this.todoList = [];
         mobx.makeObservable(this);
@@ -70,6 +71,6 @@ class TodosVM implements IViewModel<unknown> {
     }
 }
 
-const [ connectTodosVM, TodosVMContext ] = createConnect<TodosVM>();
+const connectTodosVM = createConnect(TodosVM);
 
-export { TodosVM, TodosVMContext, connectTodosVM };
+export { TodosVM, connectTodosVM };

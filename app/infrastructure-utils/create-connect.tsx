@@ -3,10 +3,6 @@ import * as mobxReact from 'mobx-react';
 import { ReactComponent } from './internals/additional-types';
 import { IVMConstructor } from './wm-types';
 
-type ConnectType<TContextData> = <TContextProps, TOwnProps = {}>(
-    ComponnetToConnect: ReactComponent<TContextProps & TOwnProps>,
-    mapContextToProps: (contextData: TContextData, ownProps?: TOwnProps) => TContextProps) => ReactComponent<TOwnProps>
-
 const contextRegistry: {[key: string]: React.Context<any>} = {};
 
 /**
@@ -15,7 +11,7 @@ const contextRegistry: {[key: string]: React.Context<any>} = {};
  */
 const createConnect = <TVMData,>(
     constructorType: IVMConstructor<any, TVMData>,
-) : ConnectType<TVMData> => {
+)=> {
     if(contextRegistry[constructorType.name]) {
         throw new Error(`unable to create context for constructor '${constructorType.name}'. Context has been already created`);
     }
@@ -25,8 +21,8 @@ const createConnect = <TVMData,>(
     contextRegistry[constructorType.name] = context;
 
     // merge properties derived from context with own properties of compoent
-    const connectFn = <TVMProps, TOwnProps = {}>(
-        ComponnetToConnect: ReactComponent<TVMProps & TOwnProps>,
+    const connectFn = <TAllProps extends TVMProps & TOwnProps, TVMProps, TOwnProps = {}>(
+        ComponnetToConnect: ReactComponent<TAllProps>,
         mapVMToProps: (contextData: TVMData, ownProps?: TOwnProps) => TVMProps) => {
 
         return (ownProps: TOwnProps) => (
@@ -38,7 +34,7 @@ const createConnect = <TVMData,>(
                         const fullProps = {
                             ...ownProps,
                             ...contextProps,
-                        }
+                        } as TAllProps;
 
                         return <ComponnetToConnect {...fullProps} />;
                     }}

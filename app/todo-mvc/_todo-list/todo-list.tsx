@@ -23,7 +23,7 @@ const TodoListDisconnected = (props: IContenxtProps & IOwnProps) => (
     </section>
 )
 
-const TodoList = connectTodosVM<IContenxtProps, IOwnProps>(TodoListDisconnected, (vm, ownProps) => {
+const TodoList = connectTodosVM(TodoListDisconnected, (vm, ownProps: IOwnProps) => {
     const hasActiveItems = vm.getTodoItems(TodoStatus.Active).length;
     const hasCompletedItems = vm.getTodoItems(TodoStatus.Completed).length;
 

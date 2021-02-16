@@ -18,7 +18,7 @@ const TodoItemDisconnected = (props: IContextProps & ITodoItem) => {
     </li>
 }
 
-const TodoItem = connectTodosVM<IContextProps, ITodoItem>(TodoItemDisconnected, (vm, ownProps) => {
+const TodoItem = connectTodosVM(TodoItemDisconnected, (vm, ownProps: ITodoItem) => {
     return {
         toggleStatus: () => vm.toggleStatus(ownProps.id),
         removeTodo: () => vm.removeTodo(ownProps.id),

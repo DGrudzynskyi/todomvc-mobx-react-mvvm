@@ -39,7 +39,7 @@ const FooterDisconnected = (props: IContextProps & IOwnProps) => {
     </footer>
 }
 
-const Footer = connectTodosVM<IContextProps, IOwnProps>(FooterDisconnected, vm => {
+const Footer = connectTodosVM(FooterDisconnected, (vm, ownProps: IOwnProps) => {
     return {
         clearCompleted: vm.removeCompletedTodos,
         activeItemsCount: vm.getTodoItems(TodoStatus.Active).length,

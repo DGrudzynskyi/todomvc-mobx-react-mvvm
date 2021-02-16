@@ -35,7 +35,7 @@ const HeaderDisconnected = (props: IProps) => {
     )
 }
 
-const Header = connectTodosVM<IProps>(HeaderDisconnected, vm => {
+const Header = connectTodosVM(HeaderDisconnected, vm => {
     return {
         createTodo: vm.createTodo,
     }

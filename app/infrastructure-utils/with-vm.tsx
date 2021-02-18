@@ -1,4 +1,4 @@
-import { default as React, useEffect } from 'react';
+import { default as React, useContext, useEffect } from 'react';
 import { useStateSafe } from './internals/use-state-safe';
 import { ReactComponent } from './internals/additional-types';
 import { IViewModel, IVMConstructor } from './wm-types';
@@ -20,7 +20,7 @@ const makeWithVM = (
     vmPropName?: TVMPropName,
     depsSelector?: (props: TProps) => any[],
 ) => {
-    return ((props: TProps) => {
+    const vmHOC = (props: TProps) => {
         const [viewModel, setViewModel] = useStateSafe<TVM>(null);
 
         useEffect(() => {
@@ -83,7 +83,12 @@ const makeWithVM = (
         }
     // that's tricky: TProps can not be casted to Omit<TFullProps, TVMPropName> because typescript think that there might be no overlap
     // but TFullProps extends from TProps so there should be an overlap
-    }) as unknown as React.FunctionComponent<Omit<TFullProps, TVMPropName>>;
+    };
+    
+    // todo: get rid of this while not in development env
+    vmHOC.displayName = Component.displayName || VMConstructor.name + '_host';
+
+    return vmHOC as unknown as React.FunctionComponent<Omit<TFullProps, TVMPropName>>;
 };
 
 

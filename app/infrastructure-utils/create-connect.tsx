@@ -21,15 +21,29 @@ const createConnect = <TVMData,>(
     contextRegistry[constructorType.name] = context;
 
     // merge properties derived from context with own properties of compoent
-    const connectFn = <TAllProps extends TVMProps & TOwnProps, TVMProps, TOwnProps = {}>(
+    return <TAllProps extends TVMProps & TOwnProps, TVMProps, TOwnProps = {}>(
         ComponnetToConnect: ReactComponent<TAllProps>,
         mapVMToProps: (contextData: TVMData, ownProps?: TOwnProps) => TVMProps) => {
 
-        return (ownProps: TOwnProps) => (
+        const wrappedHOC = (ownProps: TOwnProps) => {
+            const ctxData = React.useContext(context);
+            const ObserverComponent = mobxReact.useObserver(() => {
+                const contextProps = mapVMToProps(ctxData, ownProps);
+
+                const fullProps = {
+                    ...ownProps,
+                    ...contextProps,
+                } as TAllProps;
+
+                return <ComponnetToConnect {...fullProps} />;
+            });
+            return ObserverComponent;
+            /*return 
+            // doublecheck that there are no issues with caching when switched to useContext and useObserver
             <context.Consumer>
-                {contextData => {
-                    return <mobxReact.Observer>{() => {
-                        const contextProps = mapVMToProps(contextData, ownProps);
+                {contextData => {(
+                    <mobxReact.Observer>{() => {
+                        const contextProps = mapVMToProps(ctxData, ownProps);
 
                         const fullProps = {
                             ...ownProps,
@@ -39,12 +53,13 @@ const createConnect = <TVMData,>(
                         return <ComponnetToConnect {...fullProps} />;
                     }}
                     </mobxReact.Observer>
-                }}
-            </context.Consumer>
-        );
-    }
+                )}}</context.Consumer>;*/
+        }
 
-    return connectFn;
+        // for react devtools, sik. todo: don't apply in dev env
+        wrappedHOC.displayName = (ComponnetToConnect.displayName || ComponnetToConnect.name) + '_connected_' + constructorType.name;
+        return wrappedHOC;
+    }
 }
 
 export { createConnect, contextRegistry };

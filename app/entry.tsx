@@ -2,11 +2,13 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { TodoMVC } from './todo-mvc/todo-mvc';
-import { TodoStatus } from './todo-mvc/todos.dao';
+
+const basePath = process.env.basePath;
 
 ReactDOM.render(
     <React.StrictMode>
-        <BrowserRouter>
+        {/* use string for simplicity. in real life application should be extracted into runtime settings  */}
+        <BrowserRouter basename={basePath}>
             <Route 
                 path="/:todostatus?"
                 render={({ match }) => {

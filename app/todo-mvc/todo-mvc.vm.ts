@@ -21,6 +21,11 @@ class TodosVM implements IViewModel<unknown> {
 
     @mobx.action
     public createTodo = (name: string) => {
+        if(!name || name.trim() === '') {
+            // do not let to create
+            return; 
+        }
+
         const newTodo = this.todoDao.create({
             name: name,
             status: TodoStatus.Active,

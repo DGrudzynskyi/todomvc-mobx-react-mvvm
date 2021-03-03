@@ -39262,6 +39262,10 @@
 	    constructor(props, todoDao = new TodoDAO()) {
 	        this.todoDao = todoDao;
 	        this.createTodo = (name) => {
+	            if (!name || name.trim() === '') {
+	                // do not let to create
+	                return;
+	            }
 	            const newTodo = this.todoDao.create({
 	                name: name,
 	                status: TodoStatus.Active,

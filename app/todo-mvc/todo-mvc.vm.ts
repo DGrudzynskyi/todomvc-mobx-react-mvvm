@@ -12,7 +12,6 @@ class TodosVM implements IViewModel<unknown> {
     // we don't have any IoC container plugged in for the application so concrete instance is plugged in explicitely
     constructor(props: unknown, private readonly todoDao: ITodoDAO = new TodoDAO()) {
         this.todoList = [];
-        mobx.makeObservable(this);
     }
 
     public initialize() {

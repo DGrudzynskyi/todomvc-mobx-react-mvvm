@@ -1,14 +1,15 @@
-import { default as React, useContext, useEffect } from 'react';
+import { default as React, useEffect } from 'react';
 import { useStateSafe } from './internals/use-state-safe';
 import { ReactComponent } from './internals/additional-types';
 import { IViewModel, IVMConstructor } from './wm-types';
 import { contextRegistry } from './create-connect';
+import * as mobx from 'mobx';
 
 
 /**
  * make function, which bind the viewmodel to the component
  * Wraps react component by passing prepared viewmodel into it as a separate prop
- * Should be used if vmFactory is overriden in order to unilize IoC container for viewmodel instances creation
+ * Should be used if vmFactory is overriden if we want to utilize IoC container for viewmodel instances creation
  * Otherwise - use default 'withVM' function
  * @param vmFactory - factory, used for creation of the viewmodel from it's constructor and initial props passed to the component
  */
@@ -81,8 +82,6 @@ const makeWithVM = (
         } else {
             return null;
         }
-    // that's tricky: TProps can not be casted to Omit<TFullProps, TVMPropName> because typescript think that there might be no overlap
-    // but TFullProps extends from TProps so there should be an overlap
     };
     
     // todo: get rid of this while not in development env
@@ -104,6 +103,6 @@ const makeWithVM = (
  *  so single viemodel instance is active throught the whole lifetime of component instance.
  * @param vmPropName - name of the prop, used for viewmodel injection.
  */
-const withVM = makeWithVM((props, Constructor) => new Constructor(props));
+const withVM = makeWithVM((props, Constructor) => mobx.makeObservable(new Constructor(props)));
 
 export { withVM, makeWithVM, IViewModel };

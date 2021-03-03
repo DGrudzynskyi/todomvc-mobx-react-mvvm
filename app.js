@@ -39434,8 +39434,9 @@
 	};
 	const TodoMVC = withVM(TodoMvcDisconnected, TodosVM);
 
+	const basePath = 'todomvc-mobx-react-mvvm/';
 	reactDom.render(react.createElement(react.StrictMode, null,
-	    react.createElement(BrowserRouter, null,
+	    react.createElement(BrowserRouter, { basename: basePath },
 	        react.createElement(Route, { path: "/:todostatus?", render: ({ match }) => {
 	                return react.createElement(react.Fragment, null,
 	                    react.createElement(TodoMVC, { status: match.params.todostatus }));

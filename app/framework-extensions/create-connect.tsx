@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as mobxReact from 'mobx-react';
-import { ReactComponent } from './internals/additional-types';
+import { ReactComponent } from './additional-types';
 import { IVMConstructor } from './wm-types';
 
 const contextRegistry: {[key: string]: React.Context<any>} = {};
@@ -27,6 +27,7 @@ const createConnect = <TVMData,>(
 
         const wrappedHOC = (ownProps: TOwnProps) => {
             const ctxData = React.useContext(context);
+            // utilize useObserver instead of <Observer> in order to make react devtools more useful
             const ObserverComponent = mobxReact.useObserver(() => {
                 const contextProps = mapVMToProps(ctxData, ownProps);
 
@@ -38,22 +39,6 @@ const createConnect = <TVMData,>(
                 return <ComponnetToConnect {...fullProps} />;
             });
             return ObserverComponent;
-            /*return 
-            // doublecheck that there are no issues with caching when switched to useContext and useObserver
-            <context.Consumer>
-                {contextData => {(
-                    <mobxReact.Observer>{() => {
-                        const contextProps = mapVMToProps(ctxData, ownProps);
-
-                        const fullProps = {
-                            ...ownProps,
-                            ...contextProps,
-                        } as TAllProps;
-
-                        return <ComponnetToConnect {...fullProps} />;
-                    }}
-                    </mobxReact.Observer>
-                )}}</context.Consumer>;*/
         }
 
         // for react devtools, sik. todo: don't apply in dev env

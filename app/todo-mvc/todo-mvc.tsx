@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { withVM } from '../infrastructure-utils/with-vm';
+import { withVM } from '../framework-extensions/with-vm';
 import { TodosVM } from './todo-mvc.vm';
 import { TodoStatus } from './todos.dao';
 import { Footer } from './_footer';

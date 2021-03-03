@@ -1,8 +1,8 @@
 import * as mobx from 'mobx';
-import { IViewModel } from '../infrastructure-utils/with-vm';
-import { TodoDAO } from '../local-storage/todos.dao';
+import { IViewModel } from '../framework-extensions/with-vm';
+import { TodoDAO } from '../boundaries/local-storage/todos.dao';
 import { ITodoDAO, ITodoItem, TodoStatus } from "./todos.dao";
-import { createConnect } from '../infrastructure-utils/create-connect';
+import { createConnect } from '../framework-extensions/create-connect';
 
 // viewmodel does not depends on specific execution context, therefore set props to 'unknown'
 class TodosVM implements IViewModel<unknown> {
@@ -14,10 +14,12 @@ class TodosVM implements IViewModel<unknown> {
         this.todoList = [];
     }
 
+    @mobx.action
     public initialize() {
         this.todoList = this.todoDao.getList();
     }
 
+    @mobx.action
     public createTodo = (name: string) => {
         const newTodo = this.todoDao.create({
             name: name,
@@ -30,6 +32,7 @@ class TodosVM implements IViewModel<unknown> {
         return this.todoList.filter(x => !filter || x.status === filter) as ReadonlyArray<Readonly<ITodoItem>>;
     }
 
+    @mobx.action
     public toggleStatus = (id: number) => {
         const targetItem = this.todoList.find(x => x.id === id);
         if(targetItem) {
@@ -46,6 +49,7 @@ class TodosVM implements IViewModel<unknown> {
         this.todoDao.update(targetItem);
     }
 
+    @mobx.action
     public setAllStatus = (newStatus: TodoStatus) => {
         for(const item of this.todoList){
             if(newStatus !== item.status) {
@@ -55,12 +59,14 @@ class TodosVM implements IViewModel<unknown> {
         }
     }
 
+    @mobx.action
     public removeTodo = (id: number) => {
         const targetItemIndex = this.todoList.findIndex(x => x.id === id);
         this.todoList.splice(targetItemIndex, 1);
         this.todoDao.delete(id);
     }
 
+    @mobx.action
     public removeCompletedTodos = () => {
         const completedItems = this.todoList.filter(x => x.status === TodoStatus.Completed);
         this.todoList = this.todoList.filter(x => x.status === TodoStatus.Active);

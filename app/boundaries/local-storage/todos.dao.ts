@@ -1,4 +1,4 @@
-import { ITodoDAO, ITodoItem } from "../todo-mvc/todos.dao";
+import { ITodoDAO, ITodoItem } from "../../todo-mvc/todos.dao";
 
 class TodoDAO extends ITodoDAO {
     public getList(): ITodoItem[] {

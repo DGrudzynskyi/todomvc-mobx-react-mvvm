@@ -1,6 +1,6 @@
 import { default as React, useEffect } from 'react';
-import { useStateSafe } from './internals/use-state-safe';
-import { ReactComponent } from './internals/additional-types';
+import { useStateSafe } from './use-state-safe';
+import { ReactComponent } from './additional-types';
 import { IViewModel, IVMConstructor } from './wm-types';
 import { contextRegistry } from './create-connect';
 import * as mobx from 'mobx';

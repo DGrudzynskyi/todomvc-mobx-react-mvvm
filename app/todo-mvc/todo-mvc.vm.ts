@@ -4,7 +4,6 @@ import { TodoDAO } from '../boundaries/local-storage/todos.dao';
 import { ITodoDAO, ITodoItem, TodoStatus } from "./todos.dao";
 import { createConnect } from '../framework-extensions/create-connect';
 
-// viewmodel does not depends on specific execution context, therefore set props to 'unknown'
 class TodosVM implements IViewModel<{ status: TodoStatus }> {
     @mobx.observable
     private todoList: ITodoItem[];

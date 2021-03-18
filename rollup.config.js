@@ -4,9 +4,11 @@ import rollupPluginCommonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from 'typescript';
 import replace from '@rollup/plugin-replace';
+import autoPreprocess from 'svelte-preprocess';
+import svelte from 'rollup-plugin-svelte';
 
 const rollupConfig = {
-    input: './app/entry.tsx',
+    input: './app/entry.ts',
     context: 'window',
     output: {
         file: `./dist/app.js`,
@@ -14,11 +16,22 @@ const rollupConfig = {
         format: 'iife',
     },
     plugins: [
-        resolve(),
+        svelte({
+            extensions: ['.svelte'],
+            compilerOptions: {
+                dev: true
+            },
+            preprocess: autoPreprocess({sourceMap:true}),
+        }),
+        resolve({
+			browser: true,
+			dedupe: ['svelte']
+        }),
         rollupPluginCommonjs(),
         typescriptPlugin({
             typescript: typescript,
             tsconfig: 'tsconfig.json',
+            objectHashIgnoreUnknownHack: true,
         }),
         sourcemaps(),
         replace({

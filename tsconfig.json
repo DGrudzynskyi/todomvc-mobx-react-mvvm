@@ -1,21 +1,25 @@
 {
-    "compilerOptions": {
-      "esModuleInterop": true,
-      "incremental": false,
-      "jsx": "react",
-      "target": "ES6",
-      "module": "ES6",
-      "lib": ["dom", "es5", "es2015.promise","es2015.collection","es2017.object","es2015.core", "es2015.iterable", "es2015.symbol", "es2015.symbol.wellknown"],
-      "moduleResolution": "node",
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "sourceMap": true,
-      "outDir": "./dist/ts-modules-compiled/",
-      "allowSyntheticDefaultImports": true
-    },
-    "include": [
-      "./app/**/*.ts",
-      "./app/**/*.tsx"
-    ]
-  }
-  
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "importsNotUsedAsValues": "remove",
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "incremental": false,
+    "jsx": "react",
+    "target": "ES6",
+    "module": "ES6",
+    "lib": ["dom", "es5", "es2015.promise","es2015.collection","es2017.object","es2015.core", "es2015.iterable", "es2015.symbol", "es2015.symbol.wellknown"],
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "outDir": "./dist/ts-modules-compiled/",
+    "allowSyntheticDefaultImports": true,
+    "types": ["node","svelte"]
+  },
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "app/**/*.svelte",
+  ]
+}

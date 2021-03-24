@@ -6,8 +6,9 @@ import { IVMConstructor } from './wm-types';
 const contextRegistry: {[key: string]: React.Context<any>} = {};
 
 /**
- * build connect function, which takes properties from the viewmodel, set into context of provided type
- * @param context - if not passed - create new react context and return in alongside the connect function
+ * build connect function, which takes properties from the viewmodel.
+ * creates react context for the viewmodel of type, provided using `constructorType` argument.
+ * @param constructorType - viewmodel constructor (most likely defined using class syntax)
  */
 const createConnect = <TVMData,>(
     constructorType: IVMConstructor<any, TVMData>,

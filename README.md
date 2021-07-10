@@ -15,9 +15,10 @@ npm start
 Local application port is hardcoded within the local-server.js file.
 
 Application sources are located within the 'app' folder.
-app/framework-extensions - code, related to integration with react and mobx
-app/boundaries - code, related to integration with external boundaries (so far - only local storage)
-app/todo-mvc - application itself.
-app/entry.tsx - Notice it's dependency on react
+
+- app/framework-extensions - code, related to integration with react and mobx
+- app/boundaries - code, related to integration with external boundaries (so far - only local storage)
+- app/todo-mvc - application itself.
+- app/entry.tsx - Notice it's dependency on react
 
 Checkout the <a href='https://dgrudzynskyi.github.io/dev-blog/architecture/2021/03/04/designing-framework-agnostic-browser-based-spa.html'>article</a> for more details.
